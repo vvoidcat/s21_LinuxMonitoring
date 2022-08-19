@@ -17,8 +17,12 @@ function init_arrays() {
     colors_bg=($color_white_bg $color_red_bg $color_cyan_bg
                $color_blue_bg $color_purple_bg $color_black_bg $color_none)
     
-    colors_default=($color_bg1_default $color_font1_default $color_bg2_default
-                    $color_font2_default)
+    colors_default=($color_bg1_default $color_font1_default $color_font2_default)
+
+    headers=("HOSTNAME" "TIMEZONE" "USER" "OS" "DATE"
+             "UPTIME" "UPTIME_SEC" "IP" "MASK" "GATEWAY"
+             "RAM_TOTAL" "RAM_USED" "RAM_FREE" "SPACE_ROOT"
+             "SPACE_ROOT_USED" "SPACE_ROOT_FREE")
 }
 
 function check_var_exists() {
@@ -49,18 +53,14 @@ function correct_str() {
 }
 
 function update_colors() {
-    column1_background=$(($(reset_color "$column1_background" "$column1_font_color" "$color_bg1_default") - 1))
-    column1_font_color=$(($(reset_color "$column1_font_color" "$column1_background" "$color_font1_default") - 1))
-    column2_background=$(($(reset_color "$column2_background" "$column2_font_color" "$color_bg2_default") - 1))
-    column2_font_color=$(($(reset_color "$column2_font_color" "$column2_background" "$color_font2_default") - 1))
-}
+    colorstr=$1
+    color_bg1_user=${colorstr: $i: 1}
+    color_font1_user=${colorstr: $i: 2}
+    color_font2_user=${colorstr: $i: 3}
 
-function reset_color() {
-    color=$1
-    friend=$2
-    if [ -z "$color" ] || [[ ! $color =~ $colorre ]] || [ $color -eq $friend ]; then color=$3; fi
-    while [[ $color = $friend ]]; do i=$(($RANDOM % 2 + 1)); done
-    echo "$color"
+    if [ -z "$color_bg1_user" ]; then color_bg1_user=$color_bg1_default; fi
+    if [ -z "$color_font1_user" ]; then color_font1_user=$color_font1_default; fi
+    if [ -z "$color_font2_user" ]; then color_font2_user=$color_font2_default; fi
 }
 
 
@@ -70,116 +70,61 @@ function print_size() {
     if ! [[ $1 = "n/a" ]]; then echo "$2"; fi
 }
 
-function print_sysinfo_default() {
+function print_sysinfo() {
     for ((i=0; i<${#headers[@]}; i++)); do
-        printf "${headers[$i]}"
+        print_colored_text "$1" "${headers[$i]}" "$color_white_font" ""
         printf " = "
-        printf "${vars[$i]}"
-        printf "\n"
-    done
-}
-
-function print_sysinfo_colored() {
-    for ((i=0; i<${#headers[@]}; i++)); do
-        printf "%b" ${colors_font[$column1_font_color]}
-        printf "%b" ${colors_bg[$column1_background]}
-        printf "${headers[$i]}"
-        printf "%b" $reset
-        printf " = "
-        printf "%b" ${colors_font[$column2_font_color]}
-        printf "%b" ${colors_bg[$column2_background]}
-        printf "${vars[$i]}"
-        printf "%b" $reset
+        print_colored_text "$1" "${vars[$i]}" "${colors_font[$color_font1_user]}" "${colors_bg[$color_bg1_user]}"
         printf "\n"
     done
 }
 
 function print_filesinfo() {
-    color=$1
+    color=$color_font2_user
 
-    printf "Total number of folders (including all nested ones) = " && print_colored_text "$v_folders_total" "$color" ""
+    printf "Total number of folders (including all nested ones) = " && print_colored_text $1 "$v_folders_total" "$color" ""
     printf "TOP 5 folders of maximum size arranged in descending order (path and size):\n"
-    print_colored_text "$v_folders_list_maxsize" "$color" ""
+    print_colored_text $1 "$v_folders_list_maxsize" "$color" ""
 
-    printf "Total number of files = " && print_colored_text "$v_files_all_total" "$color" ""
-    printf "Configuration (.conf) files = " && print_colored_text "$v_files_conf_total" "$color" ""
-    printf "Text files = " && print_colored_text  "$v_files_txt_total" "$color" ""
-    printf "Executable files = " && print_colored_text  "$v_files_exec_total" "$color" ""
-    printf "Log (.log) files = " && print_colored_text  "$v_files_log_total" "$color" ""
-    printf "Archive files = " && print_colored_text  "$v_archives_total" "$color" ""
-    printf "Symbolic links = " && print_colored_text  "$v_symlinks_total" "$color" ""
+    printf "Total number of files = " && print_colored_text $1 "$v_files_all_total" "$color" ""
+    printf "Configuration (.conf) files = " && print_colored_text $1 "$v_files_conf_total" "$color" ""
+    printf "Text files = " && print_colored_text $1 "$v_files_txt_total" "$color" ""
+    printf "Executable files = " && print_colored_text $1 "$v_files_exec_total" "$color" ""
+    printf "Log (.log) files = " && print_colored_text $1 "$v_files_log_total" "$color" ""
+    printf "Archive files = " && print_colored_text $1 "$v_archives_total" "$color" ""
+    printf "Symbolic links = " && print_colored_text $1 "$v_symlinks_total" "$color" ""
 
     printf "TOP 10 files of maximum size arranged in descending order (path, size and type):\n"
-    print_colored_text "$(correct_str "$v_files_list_maxsize")" "$color" ""
+    print_colored_text $1 "$(correct_str "$v_files_list_maxsize")" "$color" ""
 
     printf "TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file):\n"
-    print_colored_text "$v_files_list_exec_maxsize" "$color" ""
+    print_colored_text $1 "$v_files_list_exec_maxsize" "$color" ""
 
-    printf "Script execution time (in seconds) = " && print_colored_text "$v_exectime" "$color" ""
+    printf "Script execution time (in seconds) = " && print_colored_text $1 "$v_exectime" "$color" ""
 }
 
 function print_colored_text() {
-    text=$1
-    font=$2
-    bg=$3
-    tput bold
-    printf "%b" $font
-    printf "%b" $bg
-    printf "%s\n" "$text"
-    printf "%b" $reset
+    flag=$1
+    text=$2
+    font=$3
+    bg=$4
+
+    if [[ "$flag" = "1" ]]; then tput bold && printf "%b" $font && printf "%b" $bg; fi
+    printf "%s" "$text"
+    if [[ "$flag" = "1" ]]; then printf "%b" $reset; fi
 }
 
 function print_color_settings() {
-    print_single_color "$column1_background" "${colors_font[$column1_background]}" "${colors_txt[$column1_background]}" 0
-    print_single_color "$column1_font_color" "${colors_font[$column1_font_color]}" "${colors_txt[$column1_font_color]}" 1
-    print_single_color "$column2_background" "${colors_font[$column2_background]}" "${colors_txt[$column2_background]}" 2
-    print_single_color "$column2_font_color" "${colors_font[$column2_font_color]}" "${colors_txt[$column2_font_color]}" 3
+    #print_single_color "$column1_background" "${colors_font[$column1_background]}" "${colors_txt[$column1_background]}" 0
+    echo "aaaaa"
 }
 
-function print_single_color() {
-    color=$(get_color_scheme $1 $4)
-    colorcode=$2
-    color_text=$3
-    type=$(get_color_type $1)
-    column=$(get_color_column $1)
-
-    printf "Column %s " $column
-    printf "%s " $type
-    printf "= "
-    printf "%s " $color
-    printf "%b" $colorcode
-    printf "%s\n" $color_text
-    printf "%b" $reset
+function print_color_scheme() {
+    echo "aaa"
 }
 
-function get_color_scheme() {
-    color=$1
-    count=$2
-    temp=$((${colors_default[$count]} - 1))
-
-    if [ $color -eq $temp ]; then
-        if [[ $(get_color_column $color) = $(get_color_column $temp) ]] && 
-           [[ $(get_color_type $color) = $(get_color_type $temp) ]]; then
-            color="default"
-        fi
-    fi
-
-    if [[ $color != "default" ]]; then color=$(($1 + 1)); fi
-    echo "$color"
-}
-
-function get_color_column() {
-    column=0
-    if [ $1 -eq $column1_background ] || [ $1 -eq $column1_font_color ]; then column=1
-    else column=2; fi
-    echo "$column"
-}
-
-function get_color_type() {
-    type="."
-    if [ $1 -eq $column1_background ] || [ $1 -eq $column2_background ]; then type="background"
-    else type="font color"; fi
-    echo "$type"
+function check_color_default() {
+    echo "check"
 }
 
 

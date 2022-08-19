@@ -25,7 +25,7 @@ if [ $status_flag -eq 1 ]; then
         touch $status_folder/$filename
 
         if [ -f "$status_folder/$filename" ]; then
-            print_sysinfo_default > $status_folder/$filename
+            print_sysinfo 0 > $status_folder/$filename
             #print_filesinfo_default > $status_folder/$filename
             echo "a new .status file created at:" $(pwd)"/"$status_folder"/"$filename
         else

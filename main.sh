@@ -4,7 +4,7 @@ source src/config.sh
 source ./src/lib.sh
 
 set_printf_locale
-update_colors
+update_colors 123
 
 adapter=$(get_adapter)
 
@@ -28,8 +28,7 @@ v_space_root_free=$(get_space_root_free)
 
 init_arrays
 
-print_sysinfo_colored
-echo "~~~~~~~~"
+print_sysinfo 1
 print_color_settings
 
 echo "~~~~~~~~"
