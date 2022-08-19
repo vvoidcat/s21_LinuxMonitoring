@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 #### other
 
 function init_arrays() {
@@ -9,14 +8,14 @@ function init_arrays() {
           "$v_ram_total" "$v_ram_used" "$v_ram_free" "$v_space_root"
           "$v_space_root_used" "$v_space_root_free")
 
-    colors_txt=($color_white_txt $color_red_txt $color_green_txt 
-                $color_blue_txt $color_purple_txt $color_black_txt)
+    colors_txt=($color_white_txt $color_red_txt $color_cyan_txt 
+                $color_blue_txt $color_purple_txt $color_black_txt $color_none_txt)
 
-    colors_font=($color_white_font $color_red_font $color_green_font
-                 $color_blue_font $color_purple_font $color_black_font)
+    colors_font=($color_white_font $color_red_font $color_cyan_font
+                 $color_blue_font $color_purple_font $color_black_font $color_none)
 
-    colors_bg=($color_white_bg $color_red_bg $color_green_bg
-               $color_blue_bg $color_purple_bg $color_black_bg)
+    colors_bg=($color_white_bg $color_red_bg $color_cyan_bg
+               $color_blue_bg $color_purple_bg $color_black_bg $color_none)
     
     colors_default=($color_bg1_default $color_font1_default $color_bg2_default
                     $color_font2_default)
@@ -95,33 +94,38 @@ function print_sysinfo_colored() {
     done
 }
 
-function print_filesinfo_default() {
-    printf "Total number of folders (including all nested ones) = " && print_variable "$v_folders_total"
-    printf "TOP 5 folders of maximum size arranged in descending order (path and size):\n"
-    print_variable "$v_folders_list_maxsize"
+function print_filesinfo() {
+    color=$1
 
-    printf "Total number of files = " && print_variable "$v_files_all_total"
-    printf "Configuration (.conf) files = " && print_variable "$v_files_conf_total"
-    printf "Text files = " && print_variable  "$v_files_txt_total"
-    printf "Executable files = " && print_variable  "$v_files_exec_total"
-    printf "Log (.log) files = " && print_variable  "$v_files_log_total"
-    printf "Archive files = " && print_variable  "$v_archives_total"
-    printf "Symbolic links = " && print_variable  "$v_symlinks_total"
+    printf "Total number of folders (including all nested ones) = " && print_colored_text "$v_folders_total" "$color" ""
+    printf "TOP 5 folders of maximum size arranged in descending order (path and size):\n"
+    print_colored_text "$v_folders_list_maxsize" "$color" ""
+
+    printf "Total number of files = " && print_colored_text "$v_files_all_total" "$color" ""
+    printf "Configuration (.conf) files = " && print_colored_text "$v_files_conf_total" "$color" ""
+    printf "Text files = " && print_colored_text  "$v_files_txt_total" "$color" ""
+    printf "Executable files = " && print_colored_text  "$v_files_exec_total" "$color" ""
+    printf "Log (.log) files = " && print_colored_text  "$v_files_log_total" "$color" ""
+    printf "Archive files = " && print_colored_text  "$v_archives_total" "$color" ""
+    printf "Symbolic links = " && print_colored_text  "$v_symlinks_total" "$color" ""
 
     printf "TOP 10 files of maximum size arranged in descending order (path, size and type):\n"
-    print_variable "$(correct_str "$v_files_list_maxsize")"
+    print_colored_text "$(correct_str "$v_files_list_maxsize")" "$color" ""
 
     printf "TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file):\n"
-    print_variable "$v_files_list_exec_maxsize"
+    print_colored_text "$v_files_list_exec_maxsize" "$color" ""
 
-    printf "Script execution time (in seconds) = " && print_variable "$v_exectime"
+    printf "Script execution time (in seconds) = " && print_colored_text "$v_exectime" "$color" ""
 }
 
-function print_variable() {
+function print_colored_text() {
+    text=$1
+    font=$2
+    bg=$3
     tput bold
-    printf "%b" $2
-    printf "%b" $3
-    printf "%s\n" "$1"
+    printf "%b" $font
+    printf "%b" $bg
+    printf "%s\n" "$text"
     printf "%b" $reset
 }
 
@@ -155,7 +159,7 @@ function get_color_scheme() {
 
     if [ $color -eq $temp ]; then
         if [[ $(get_color_column $color) = $(get_color_column $temp) ]] && 
-            [[ $(get_color_type $color) = $(get_color_type $temp) ]]; then
+           [[ $(get_color_type $color) = $(get_color_type $temp) ]]; then
             color="default"
         fi
     fi
