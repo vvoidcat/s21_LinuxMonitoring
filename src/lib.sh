@@ -54,9 +54,9 @@ function correct_str() {
 
 function update_colors() {
     colorstr=$1
-    color_bg1_user=${colorstr: $i: 1}
-    color_font1_user=${colorstr: $i: 2}
-    color_font2_user=${colorstr: $i: 3}
+    color_bg1_user=${colorstr: 0: 1}
+    color_font1_user=${colorstr: 1: 1}
+    color_font2_user=${colorstr: 2: 1}
 
     if [ -z "$color_bg1_user" ]; then color_bg1_user=$color_bg1_default; fi
     if [ -z "$color_font1_user" ]; then color_font1_user=$color_font1_default; fi
@@ -104,19 +104,19 @@ function print_filesinfo() {
 }
 
 function print_colored_text() {
-    flag=$1
-    text=$2
-    font=$3
-    bg=$4
+    flag="$1"
+    text="$2"
+    font="$3"
+    bg="$4"
 
-    if [[ "$flag" = "1" ]]; then tput bold && printf "%b" $font && printf "%b" $bg; fi
+    if [[ "$flag" = "1" ]]; then tput bold && printf "%b" "$font" && printf "%b" "$bg"; fi
     printf "%s" "$text"
-    if [[ "$flag" = "1" ]]; then printf "%b" $reset; fi
+    if [[ "$flag" = "1" ]]; then printf "%b" "$reset"; fi
 }
 
 function print_color_settings() {
     #print_single_color "$column1_background" "${colors_font[$column1_background]}" "${colors_txt[$column1_background]}" 0
-    echo "aaaaa"
+    echo "~~~~~~~~"
 }
 
 function print_color_scheme() {

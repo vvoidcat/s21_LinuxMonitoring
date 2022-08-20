@@ -5,6 +5,9 @@ params_flag=0
 path_flag=0
 outflag=0
 
+colored=1
+plain=0
+
 path=0
 path_type=0
 
