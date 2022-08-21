@@ -3,14 +3,14 @@
 source src/config.sh
 source ./src/lib.sh
 
-set_printf_locale
-update_colors 526
-
-echo $color_bg1_user $color_font1_user $color_font2_user
-
+starttime=$(get_time_millisec)
 adapter=$(get_adapter)
 
-echo "~~~~~~~~"
+#check flags and params
+
+set_printf_locale
+update_colors 524
+
 v_hostname=$(get_hostname)
 v_timezone=$(get_timezone)
 v_user=$(get_user)
@@ -30,11 +30,28 @@ v_space_root_free=$(get_space_root_free)
 
 init_arrays
 
-print_sysinfo $colored
-print_color_settings
+check_path $path
+follow_path "$path_type" "$path"
 
-echo "~~~~~~~~"
-source ./src/status_module.sh
+v_folders_total=$(get_folders_total)
+v_folders_list_maxsize=$(get_folders_list_maxsize)
+v_files_all_total=$(get_files_all_total)
+v_files_conf_total=$(get_files_conf_total)
+v_files_txt_total=$(get_files_txt_total)
+v_files_exec_total=$(get_files_exec_total)
+v_files_log_total=$(get_files_log_total)
+v_archives_total=$(get_archives_total)
+v_symlinks_total=$(get_symlinks_total)
+v_files_list_maxsize=$(paste -d' ' <(echo "$(get_files_list_maxsize)") <(echo "$(get_extensions)"))
+v_files_list_exec_maxsize=$(paste -d' ' <(echo "$(get_files_exec_list_maxsize)") <(echo "$(get_hashes)"))
 
-echo "~~~~~~~~"
-echo "end~"
+endtime=$(get_time_millisec)
+v_exectime=$(get_exectime $endtime $starttime)
+
+echo "~~~~~~~~" && print_sysinfo $colored
+echo "~~~~~~~~" && print_filesinfo $colored
+echo "~~~~~~~~" && print_color_settings
+
+echo "~~~~~~~~" && source ./src/status_module.sh
+
+echo "~~~~~~~~" && echo "end~"

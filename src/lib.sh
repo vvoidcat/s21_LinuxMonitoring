@@ -72,59 +72,64 @@ function print_size() {
 
 function print_sysinfo() {
     for ((i=0; i<${#headers[@]}; i++)); do
-        print_colored_text "$1" "${headers[$i]}" "$color_white_font" ""
-        printf " = "
-        print_colored_text "$1" "${vars[$i]}" "${colors_font[$color_font1_user]}" "${colors_bg[$color_bg1_user]}"
-        printf "\n"
+        printf "%s = " "${headers[$i]}"
+        print_colored_text "$1" "${vars[$i]}" "$color_font1_user" "$color_bg1_user"
     done
 }
 
 function print_filesinfo() {
     color=$color_font2_user
 
-    printf "Total number of folders (including all nested ones) = " && print_colored_text $1 "$v_folders_total" "$color" ""
+    printf "Total number of folders (including all nested ones) = " && print_colored_text $1 "$v_folders_total" "$color" 6
     printf "TOP 5 folders of maximum size arranged in descending order (path and size):\n"
-    print_colored_text $1 "$v_folders_list_maxsize" "$color" ""
+    print_colored_text $1 "$v_folders_list_maxsize" "$color" 6
 
-    printf "Total number of files = " && print_colored_text $1 "$v_files_all_total" "$color" ""
-    printf "Configuration (.conf) files = " && print_colored_text $1 "$v_files_conf_total" "$color" ""
-    printf "Text files = " && print_colored_text $1 "$v_files_txt_total" "$color" ""
-    printf "Executable files = " && print_colored_text $1 "$v_files_exec_total" "$color" ""
-    printf "Log (.log) files = " && print_colored_text $1 "$v_files_log_total" "$color" ""
-    printf "Archive files = " && print_colored_text $1 "$v_archives_total" "$color" ""
-    printf "Symbolic links = " && print_colored_text $1 "$v_symlinks_total" "$color" ""
+    printf "Total number of files = " && print_colored_text $1 "$v_files_all_total" "$color" 6
+    printf "Configuration (.conf) files = " && print_colored_text $1 "$v_files_conf_total" "$color" 6
+    printf "Text files = " && print_colored_text $1 "$v_files_txt_total" "$color" 6
+    printf "Executable files = " && print_colored_text $1 "$v_files_exec_total" "$color" 6
+    printf "Log (.log) files = " && print_colored_text $1 "$v_files_log_total" "$color" 6
+    printf "Archive files = " && print_colored_text $1 "$v_archives_total" "$color" 6
+    printf "Symbolic links = " && print_colored_text $1 "$v_symlinks_total" "$color" 6
 
     printf "TOP 10 files of maximum size arranged in descending order (path, size and type):\n"
-    print_colored_text $1 "$(correct_str "$v_files_list_maxsize")" "$color" ""
+    print_colored_text $1 "$(correct_str "$v_files_list_maxsize")" "$color" 6
 
     printf "TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file):\n"
-    print_colored_text $1 "$v_files_list_exec_maxsize" "$color" ""
+    print_colored_text $1 "$v_files_list_exec_maxsize" "$color" 6
 
-    printf "Script execution time (in seconds) = " && print_colored_text $1 "$v_exectime" "$color" ""
+    printf "Script execution time (in seconds) = " && print_colored_text $1 "$v_exectime" "$color" 6
 }
 
 function print_colored_text() {
-    flag="$1"
+    flag_color="$1"
     text="$2"
     font="$3"
     bg="$4"
 
-    if [[ "$flag" = "1" ]]; then tput bold && printf "%b" "$font" && printf "%b" "$bg"; fi
+    if [[ "$flag_color" = "1" ]]; then
+        tput bold
+        printf "%b" "${colors_font[$font]}"
+        printf "%b" "${colors_bg[$bg]}";
+    fi
     printf "%s" "$text"
-    if [[ "$flag" = "1" ]]; then printf "%b" "$reset"; fi
+    if [[ "$flag_color" = "1" ]]; then printf "%b" "$reset"; fi
+    printf "\n"
 }
 
 function print_color_settings() {
-    #print_single_color "$column1_background" "${colors_font[$column1_background]}" "${colors_txt[$column1_background]}" 0
-    echo "~~~~~~~~"
+    printf "background 1 color = " && print_color_code $color_bg1_user $color_bg1_default
+    print_colored_text $colored "${colors_txt[$color_bg1_user]}" "$color_bg1_user" 6
+    printf "font 1 color\t   = " && print_color_code $color_font1_user $color_font1_default
+    print_colored_text $colored "${colors_txt[$color_font1_user]}" "$color_font1_user" 6
+    printf "font 2 color\t   = " && print_color_code $color_font2_user $color_font2_default
+    print_colored_text $colored "${colors_txt[$color_font2_user]}" "$color_font2_user" 6
 }
 
-function print_color_scheme() {
-    echo "aaa"
-}
-
-function check_color_default() {
-    echo "check"
+function print_color_code() {
+    if [ $1 -eq $2 ]; then printf "default"
+    else printf "%s" $1; fi
+    printf " "
 }
 
 
