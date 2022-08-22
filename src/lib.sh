@@ -2,27 +2,13 @@
 
 #### other
 
-function init_arrays() {
-    vars=("$v_hostname" "$v_timezone" "$v_user" "$v_os" "$v_date"
-          "$v_uptime" "$v_uptime_sec" "$v_ip" "$v_mask" "$v_gateway"
-          "$v_ram_total" "$v_ram_used" "$v_ram_free" "$v_space_root"
-          "$v_space_root_used" "$v_space_root_free")
+function display_usage() {
+    Usage: ./myscript.sh [-s <45|90>] [-p <string>]
+    echo "usage: ./launch.sh [-a <(/)path/to/a/folder/>] [-c] [-f <(/)path/to/a/folder/>] [-h] [-s]"
+}
 
-    colors_txt=($color_white_txt $color_red_txt $color_cyan_txt 
-                $color_blue_txt $color_purple_txt $color_black_txt $color_none_txt)
-
-    colors_font=($color_white_font $color_red_font $color_cyan_font
-                 $color_blue_font $color_purple_font $color_black_font $color_none)
-
-    colors_bg=($color_white_bg $color_red_bg $color_cyan_bg
-               $color_blue_bg $color_purple_bg $color_black_bg $color_none)
-    
-    colors_default=($color_bg1_default $color_font1_default $color_font2_default)
-
-    headers=("HOSTNAME" "TIMEZONE" "USER" "OS" "DATE"
-             "UPTIME" "UPTIME_SEC" "IP" "MASK" "GATEWAY"
-             "RAM_TOTAL" "RAM_USED" "RAM_FREE" "SPACE_ROOT"
-             "SPACE_ROOT_USED" "SPACE_ROOT_FREE")
+function display_help() {
+    echo "help..."
 }
 
 function check_var_exists() {
@@ -47,6 +33,21 @@ function set_printf_locale() {
     if [ -z "$LC_NUMERIC" ] || [[ "$LC_NUMERIC" != "$en" ]]; then export LC_NUMERIC=$en; fi
 }
 
+function create_file() {
+    if [ $1 -eq 1 ]; then
+        filename=$(echo "$2")$(date +"%d_%m_%Y_%H_%M_%S.status")
+        touch $status_folder/$filename
+
+        if [ -f "$status_folder/$filename" ]; then
+            if [[ "$2" = "sysinfo_" ]]; then print_sysinfo $plain > $status_folder/$filename fi
+            if [[ "$2" = "filesinfo_" ]]; then print_filesinfo $plain > $status_folder/$filename; fi
+            echo "a new .status file (""$3"") created at:" $(pwd)"/"$status_folder"/"$filename
+        else
+            echo ".status file (""$3"") creation failure"
+        fi
+    fi
+}
+
 function correct_str() {
     str=$1
     echo "$str" | sed s/" , "/", "/g
@@ -61,6 +62,19 @@ function update_colors() {
     if [ -z "$color_bg1_user" ]; then color_bg1_user=$color_bg1_default; fi
     if [ -z "$color_font1_user" ]; then color_font1_user=$color_font1_default; fi
     if [ -z "$color_font2_user" ]; then color_font2_user=$color_font2_default; fi
+}
+
+function init_color_arrays() {
+    colors_txt=($color_white_txt $color_red_txt $color_cyan_txt 
+                $color_blue_txt $color_purple_txt $color_black_txt $color_none_txt)
+
+    colors_font=($color_white_font $color_red_font $color_cyan_font
+                 $color_blue_font $color_purple_font $color_black_font $color_none)
+
+    colors_bg=($color_white_bg $color_red_bg $color_cyan_bg
+               $color_blue_bg $color_purple_bg $color_black_bg $color_none)
+    
+    colors_default=($color_bg1_default $color_font1_default $color_font2_default)
 }
 
 
@@ -80,10 +94,8 @@ function print_sysinfo() {
 function print_filesinfo() {
     color=$color_font2_user
 
+    printf "Path = " && print_colored_text $1 "$path" "$color" 6
     printf "Total number of folders (including all nested ones) = " && print_colored_text $1 "$v_folders_total" "$color" 6
-    printf "TOP 5 folders of maximum size arranged in descending order (path and size):\n"
-    print_colored_text $1 "$v_folders_list_maxsize" "$color" 6
-
     printf "Total number of files = " && print_colored_text $1 "$v_files_all_total" "$color" 6
     printf "Configuration (.conf) files = " && print_colored_text $1 "$v_files_conf_total" "$color" 6
     printf "Text files = " && print_colored_text $1 "$v_files_txt_total" "$color" 6
@@ -92,13 +104,12 @@ function print_filesinfo() {
     printf "Archive files = " && print_colored_text $1 "$v_archives_total" "$color" 6
     printf "Symbolic links = " && print_colored_text $1 "$v_symlinks_total" "$color" 6
 
+    printf "TOP 5 folders of maximum size arranged in descending order (path and size):\n"
+    print_colored_text $1 "$v_folders_list_maxsize" "$color" 6
     printf "TOP 10 files of maximum size arranged in descending order (path, size and type):\n"
     print_colored_text $1 "$(correct_str "$v_files_list_maxsize")" "$color" 6
-
     printf "TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file):\n"
     print_colored_text $1 "$v_files_list_exec_maxsize" "$color" 6
-
-    printf "Script execution time (in seconds) = " && print_colored_text $1 "$v_exectime" "$color" 6
 }
 
 function print_colored_text() {
@@ -118,11 +129,11 @@ function print_colored_text() {
 }
 
 function print_color_settings() {
-    printf "background 1 color = " && print_color_code $color_bg1_user $color_bg1_default
+    printf "sysinfo background color   = " && print_color_code $color_bg1_user $color_bg1_default
     print_colored_text $colored "${colors_txt[$color_bg1_user]}" "$color_bg1_user" 6
-    printf "font 1 color\t   = " && print_color_code $color_font1_user $color_font1_default
+    printf "sysinfo font color\t   = " && print_color_code $color_font1_user $color_font1_default
     print_colored_text $colored "${colors_txt[$color_font1_user]}" "$color_font1_user" 6
-    printf "font 2 color\t   = " && print_color_code $color_font2_user $color_font2_default
+    printf "filesinfo font color\t   = " && print_color_code $color_font2_user $color_font2_default
     print_colored_text $colored "${colors_txt[$color_font2_user]}" "$color_font2_user" 6
 }
 
@@ -130,6 +141,12 @@ function print_color_code() {
     if [ $1 -eq $2 ]; then printf "default"
     else printf "%s" $1; fi
     printf " "
+}
+
+function print_exectime() {
+    color=$color_font1_user
+    bg=$color_bg1_user
+    printf "Script execution time (in seconds) = " && print_colored_text $colored "$v_exectime" "$color" "$bg"
 }
 
 
@@ -297,7 +314,10 @@ function get_files_exec_list_maxsize() {
 }
 
 function get_time_millisec() {
-    date +"%S.%3N"
+    min=$(date +"%M")
+    sec=$(date +"%S.%3N")
+    mininsec=$(echo "$min * 60" | bc)
+    result=$(echo "$mininsec + $sec" | bc) && echo $result
 }
 
 function get_exectime() {
