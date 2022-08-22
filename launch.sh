@@ -28,6 +28,7 @@ while getopts "a:f:c:hsqt" option; do
             ;;
         a) 
             filesinfo_flag=1 && sysinfo_flag=1 && path="${OPTARG}"
+            color_flag=1 && time_flag=1 && question_flag=1
             ;;
     esac
 done
@@ -40,18 +41,18 @@ if [ $filesinfo_flag -eq 1 ]; then
 fi
 
 set_printf_locale
-update_colors $colorcodes
+update_colors $colorcodes           # TODO check for repeats  ## getopts
 init_color_arrays
 
-source ./src/sysinfo_module.sh
 source ./src/filesinfo_module.sh
+source ./src/sysinfo_module.sh
 
 if [ $color_flag -eq 1 ]; then echo "~~~~~~~~" && print_color_settings; fi
 
 endtime=$(get_time_millisec)
 v_exectime=$(get_exectime $endtime $starttime)
-if [ $time_flag -eq 1 ]; then echo "~~~~~~~~" && print_exectime; fi
 
+if [ $time_flag -eq 1 ]; then echo "~~~~~~~~" && print_exectime; fi
 if [ $question_flag -eq 1 ]; then echo "~~~~~~~~" && source ./src/status_module.sh; fi
 
 echo "~~~~~~~~" && echo "end~"
