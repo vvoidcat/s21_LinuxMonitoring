@@ -4,6 +4,7 @@ source src/config.sh
 source ./src/lib.sh
 
 starttime=$(get_time_millisec)
+launchpath=$(pwd)
 
 while getopts "a:f:c:hsqt" option; do
     case $option in
@@ -45,6 +46,7 @@ update_colors $colorcodes           # TODO check for repeats  ## getopts
 init_color_arrays
 
 source ./src/filesinfo_module.sh
+cd ~ && cd ../.. && cd $launchpath
 source ./src/sysinfo_module.sh
 
 if [ $color_flag -eq 1 ]; then echo "~~~~~~~~" && print_color_settings; fi
