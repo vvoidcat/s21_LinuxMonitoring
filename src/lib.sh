@@ -105,7 +105,7 @@ function print_filesinfo() {
     printf "Total number of folders (including all nested ones) = " && print_colored_text $1 "$v_folders_total" "$color" 6
     printf "Total number of files = " && print_colored_text $1 "$v_files_all_total" "$color" 6
     printf "Configuration (.conf) files = " && print_colored_text $1 "$v_files_conf_total" "$color" 6
-    printf "Text files = " && print_colored_text $1 "$v_files_txt_total" "$color" 6
+    printf "Text (.txt) files = " && print_colored_text $1 "$v_files_txt_total" "$color" 6
     printf "Executable files = " && print_colored_text $1 "$v_files_exec_total" "$color" 6
     printf "Log (.log) files = " && print_colored_text $1 "$v_files_log_total" "$color" 6
     printf "Archive files = " && print_colored_text $1 "$v_archives_total" "$color" 6
@@ -274,9 +274,10 @@ function get_folders_total() {
 }
 
 function get_folders_list_maxsize() {
-    result=$(find . -type d | du -h | sort -rh | head -6)
+    result=$(find . -type d -exec du -h {} + | sort -rh | head -6)
+    count=$(echo "$result" | wc -l)
 
-    if [ ! -z "$result" ]; then
+    if [ ! -z "$result" ] && [ $count -gt 1 ]; then
         result2=$(echo "$result" | awk '{printf "\t_szffldrr_ - %s/, %s\n", $2, $1}' | grep -v " ./, ")
         awk '{for(x=1;x<=NF;x++)if($x~/_szffldrr_/){sub(/_szffldrr_/,++i)}}1' <<< "$result2"
     else printf "\tn/a"; fi
