@@ -5,45 +5,48 @@ source ./src/lib.sh
 
 starttime=$(get_time_millisec)
 
-while getopts ":a:f:chs" option; do
+while getopts ":a:f:c:hsq" option; do
     case $option in
-        a)      #all
+        a) 
+            filesinfo_flag=1 && sysinfo_flag=1 && path="${OPTARG}"
             ;;
-        s)      #system
+        s) 
+            sysinfo_flag=1
             ;;
-        f) #filesystem
+        f) 
+            filesinfo_flag=1 && path="${OPTARG}"
             ;;
-        c)      #color
+        c) 
+            color_flag=1 && colorcodes="${OPTARG}"
             ;;
-        h)  #help
+        q) 
+            if [ $filesinfo_flag -eq 1 ] || [ $sysinfo_flag -eq 1 ]; then question_flag=1
+            else display_error_message 1; fi
+            ;;
+        h) 
+            dispay_usage && echo "" && display_help && exit 0
             ;;
     esac
 done
 
-
-path=$1
-
-echo "~~~~~~~~"
-lastchar=${path: -1}
-if [ "$#" -ne 1 ]; then echo ":: error 1: usage: ./main.sh path/to/directory/ ::"
-elif [[ "$lastchar" != "/" ]]; then echo ":: error 2: the path parameter should end with '/' ::"
-else params_flag=1; fi
-#error path doesnt exist
-
+if [ $filesinfo_flag -eq 1 ]; then
+    lastchar=${path: -1}
+    if [[ "$lastchar" != "/" ]]; then display_error_message 2 && filesinfo_flag=0; fi
+fi
 
 set_printf_locale
-update_colors 524
+update_colors $colorcodes
 init_color_arrays
 
 source ./src/sysinfo_module.sh
 source ./src/filesinfo_module.sh
 
-echo "~~~~~~~~" && print_color_settings
+if [ $color_flag -eq 1 ]; then echo "~~~~~~~~" && print_color_settings; fi
 
 endtime=$(get_time_millisec)
 v_exectime=$(get_exectime $endtime $starttime)
 echo "~~~~~~~~" && print_exectime
 
-echo "~~~~~~~~" && source ./src/status_module.sh
+if [ $question_flag -eq 1 ]; then echo "~~~~~~~~" && source ./src/status_module.sh; fi
 
 echo "~~~~~~~~" && echo "end~"

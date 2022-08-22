@@ -3,12 +3,18 @@
 #### other
 
 function display_usage() {
-    Usage: ./myscript.sh [-s <45|90>] [-p <string>]
-    echo "usage: ./launch.sh [-a <(/)path/to/a/folder/>] [-c] [-f <(/)path/to/a/folder/>] [-h] [-s]"
+    echo "usage: ./launch.sh [-a <(/)path/to/a/folder/>] [-c <1-6>] [-f <(/)path/to/a/folder/>] [-h] [-q] [-s]"
 }
 
 function display_help() {
     echo "help..."
+}
+
+function display_error_message() {
+    if [ $1 -eq 1 ]; then echo "~~~~~~~~" && echo "no information to write in a file; rerun thw program with [-a], [f] or [-s]"
+    elif [ $1 -eq 2 ]; then echo "~~~~~~~~" && echo "the path parameter should end with '/'"
+    elif [ $1 -eq 4 ]; then echo "the specified path doesn't exist"
+    fi
 }
 
 function check_var_exists() {
@@ -25,7 +31,8 @@ function check_path() {
 function follow_path() {
     if [[ "$1" = "absolute" ]]; then cd ~; fi
     newpath=$(echo "$2" | rev | cut -c2- | rev)
-    if [ -d "$newpath" ]; then cd $newpath && path_flag=1; fi
+    if [ -d "$newpath" ]; then cd $newpath && path_flag=1
+    else path="n/a"; fi
 }
 
 function set_printf_locale() {
@@ -39,7 +46,7 @@ function create_file() {
         touch $status_folder/$filename
 
         if [ -f "$status_folder/$filename" ]; then
-            if [[ "$2" = "sysinfo_" ]]; then print_sysinfo $plain > $status_folder/$filename fi
+            if [[ "$2" = "sysinfo_" ]]; then print_sysinfo $plain > $status_folder/$filename; fi
             if [[ "$2" = "filesinfo_" ]]; then print_filesinfo $plain > $status_folder/$filename; fi
             echo "a new .status file (""$3"") created at:" $(pwd)"/"$status_folder"/"$filename
         else
@@ -59,9 +66,9 @@ function update_colors() {
     color_font1_user=${colorstr: 1: 1}
     color_font2_user=${colorstr: 2: 1}
 
-    if [ -z "$color_bg1_user" ]; then color_bg1_user=$color_bg1_default; fi
-    if [ -z "$color_font1_user" ]; then color_font1_user=$color_font1_default; fi
-    if [ -z "$color_font2_user" ]; then color_font2_user=$color_font2_default; fi
+    if [ -z "$color_bg1_user" ] || [[ ! $color_bg1_user =~ $colorre ]]; then color_bg1_user=$color_bg1_default; fi
+    if [ -z "$color_font1_user" ] || [[ ! $color_font1_user =~ $colorre ]]; then color_font1_user=$color_font1_default; fi
+    if [ -z "$color_font2_user" ] || [[ ! $color_font2_user =~ $colorre ]]; then color_font2_user=$color_font2_default; fi
 }
 
 function init_color_arrays() {
@@ -268,8 +275,11 @@ function get_folders_total() {
 
 function get_folders_list_maxsize() {
     result=$(find . -type d | du -h | sort -rh | head -6)
-    result2=$(echo "$result" | awk '{printf "\t_szffldrr_ - %s/, %s\n", $2, $1}' | grep -v " ./, ")
-    awk '{for(x=1;x<=NF;x++)if($x~/_szffldrr_/){sub(/_szffldrr_/,++i)}}1' <<< "$result2"
+
+    if [ ! -z "$result" ]; then
+        result2=$(echo "$result" | awk '{printf "\t_szffldrr_ - %s/, %s\n", $2, $1}' | grep -v " ./, ")
+        awk '{for(x=1;x<=NF;x++)if($x~/_szffldrr_/){sub(/_szffldrr_/,++i)}}1' <<< "$result2"
+    else printf "\tn/a"; fi
 }
 
 function get_files_all_total() {
@@ -303,14 +313,20 @@ function get_symlinks_total() {
 
 function get_files_list_maxsize() {
     result=$(find . -type f -exec du -h {} + | sort -rh | head -10)
-    result2=$(echo "$result" | awk '{printf "\t_szffldrr_ - %s, %s\n", $2, $1}')
-    awk '{for(x=1;x<=NF;x++)if($x~/_szffldrr_/){sub(/_szffldrr_/,++i)}}1' <<< "$result2"
+
+    if [ ! -z "$result" ]; then
+        result2=$(echo "$result" | awk '{printf "\t_szffldrr_ - %s, %s\n", $2, $1}')
+        awk '{for(x=1;x<=NF;x++)if($x~/_szffldrr_/){sub(/_szffldrr_/,++i)}}1' <<< "$result2"
+    else printf "\tn/a"; fi
 }
 
 function get_files_exec_list_maxsize() {
     result=$(find . -type f -executable -exec du -h {} + | sort -rh | head -10)
-    result2=$(echo "$result" | awk '{printf "\t_szffldrr_ - %s, %s,\n", $2, $1}')
-    awk '{for(x=1;x<=NF;x++)if($x~/_szffldrr_/){sub(/_szffldrr_/,++i)}}1' <<< "$result2"
+
+    if [ ! -z "$result" ]; then
+        result2=$(echo "$result" | awk '{printf "\t_szffldrr_ - %s, %s,\n", $2, $1}')
+        awk '{for(x=1;x<=NF;x++)if($x~/_szffldrr_/){sub(/_szffldrr_/,++i)}}1' <<< "$result2"
+    else printf "\tn/a"; fi
 }
 
 function get_time_millisec() {
