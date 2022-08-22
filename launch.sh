@@ -5,11 +5,8 @@ source ./src/lib.sh
 
 starttime=$(get_time_millisec)
 
-while getopts ":a:f:c:hsq" option; do
+while getopts "a:f:c:hsqt" option; do
     case $option in
-        a) 
-            filesinfo_flag=1 && sysinfo_flag=1 && path="${OPTARG}"
-            ;;
         s) 
             sysinfo_flag=1
             ;;
@@ -19,15 +16,23 @@ while getopts ":a:f:c:hsq" option; do
         c) 
             color_flag=1 && colorcodes="${OPTARG}"
             ;;
+        t)
+            time_flag=1
+            ;;
         q) 
             if [ $filesinfo_flag -eq 1 ] || [ $sysinfo_flag -eq 1 ]; then question_flag=1
             else display_error_message 1; fi
             ;;
         h) 
-            dispay_usage && echo "" && display_help && exit 0
+            display_usage && echo "" && display_help && exit 0
+            ;;
+        a) 
+            filesinfo_flag=1 && sysinfo_flag=1 && path="${OPTARG}"
             ;;
     esac
 done
+
+if (( $OPTIND == 1 )); then display_usage && exit 0; fi
 
 if [ $filesinfo_flag -eq 1 ]; then
     lastchar=${path: -1}
@@ -45,7 +50,7 @@ if [ $color_flag -eq 1 ]; then echo "~~~~~~~~" && print_color_settings; fi
 
 endtime=$(get_time_millisec)
 v_exectime=$(get_exectime $endtime $starttime)
-echo "~~~~~~~~" && print_exectime
+if [ $time_flag -eq 1 ]; then echo "~~~~~~~~" && print_exectime; fi
 
 if [ $question_flag -eq 1 ]; then echo "~~~~~~~~" && source ./src/status_module.sh; fi
 

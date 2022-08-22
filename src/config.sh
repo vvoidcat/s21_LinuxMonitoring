@@ -2,6 +2,7 @@ sysinfo_flag=0
 filesinfo_flag=0
 color_flag=0
 question_flag=0
+time_flag=0
 
 status_flag=0
 delete_flag=0

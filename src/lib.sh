@@ -3,7 +3,8 @@
 #### other
 
 function display_usage() {
-    echo "usage: ./launch.sh [-a <(/)path/to/a/folder/>] [-c <1-6>] [-f <(/)path/to/a/folder/>] [-h] [-q] [-s]"
+    echo "usage: ./launch.sh [ -a <(/)path/to/a/folder/> ] [ -c <1-6> ] [ -f <(/)path/to/a/folder/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
+    echo "~~~~~~~~" && echo "end~"
 }
 
 function display_help() {
@@ -11,9 +12,9 @@ function display_help() {
 }
 
 function display_error_message() {
-    if [ $1 -eq 1 ]; then echo "~~~~~~~~" && echo "no information to write in a file; rerun thw program with [-a], [f] or [-s]"
-    elif [ $1 -eq 2 ]; then echo "~~~~~~~~" && echo "the path parameter should end with '/'"
-    elif [ $1 -eq 4 ]; then echo "the specified path doesn't exist"
+    if [ $1 -eq 1 ]; then echo "./launch.sh: error: no information to write in a file; rerun the program with [-a], [f] or [-s]"
+    elif [ $1 -eq 2 ]; then echo "./launch.sh: error: the path string should end with '/'"
+    elif [ $1 -eq 4 ]; then echo "./launch.sh: error: the specified path doesn't exist"
     fi
 }
 
