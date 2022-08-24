@@ -13,11 +13,11 @@ echo "$argc" "$argv"
 
 function read_flags() {
     arg=$1
-
+    #echo $arg
     for ((i=1; i<${#arg}; i++)); do
         option=${argv: $i: 1}
-        if [[ "$option" = " " ]] || [[ "$option" = "\"" ]]; then newindex=$i && break #######
-        else
+        #if [[ "$option" = " " ]] || [[ "$option" = "\"" ]]; then newindex=$i && break #######
+        #else
             case $option in
                 a|s) 
                     sysinfo_flag=1 && flags=$(($flags + 1))
@@ -35,15 +35,15 @@ function read_flags() {
                     question_flag=1 && flags=$(($flags + 1))
                     ;;&
                 h) 
-                    display_usage && display_help && exit_flag=1 && break
+                    flags=$(($flags + 1)) && display_usage && display_help && exit_flag=1 && break
                     ;;
             esac
-        fi
+        #fi
     done
 }
 
 function read_param() {
-    echo "readingg"
+    #echo "readingg"
     if [ $need_param_filesinfo -eq 1 ]; then
         path=$1 && need_param_filesinfo=0
     elif [ $need_param_color -eq 1 ]; then
@@ -51,10 +51,14 @@ function read_param() {
     else
         echo "wtffff"
     fi
+
+    echo "colorcodes = "$colorcodes
 }
 
 function process_arg() {
-    echo "processinggg"
+    #echo "processinggg"
+    #echo $arg
+
 
     arg=$1
     firstchr=${arg: 0: 1}
@@ -70,10 +74,7 @@ function process_arg() {
 
 if [ -z "$argv" ] || [ -z "$argc" ]; then echo "aaaaaaaaaa"
 else
-
-    echo "parsssss"
-
-        # parse
+    # parse
     for ((i=0; i<${#argv}; i++)); do
         count=0
         newindex=$i
@@ -81,19 +82,23 @@ else
         chr=${argv: $i: 1}
         quote_flag=0 && if [[ "$chr" = "\"" ]]; then quote_flag=1 && chr=${argv: $nextindex: 1}; fi
 
+        #echo $chr
+
         if [ $exit_flag -eq 1 ]; then break; fi
 
-        nextindex=$(($i + 1))
+        #nextindex=$(($i + 1))
 
-        for ((j=$nextindex; j<${#argv}; j++)); do
+        for ((j=$i; j<${#argv}; j++)); do
             if [[ "$chr" = " " ]] && [ $quote_flag -ne 1 ]; then break; fi
             if [[ "$chr" != "\"" ]] && [ $quote_flag -eq 1 ]; then break; fi
             count=$(($count + 1))
         done
 
+        echo "arg = ""${argv: $i: $count}"" | count = " $count
+        #echo "count = " $count
         if [ $count -gt 0 ]; then process_arg "${argv: $i: $count}"; fi
-        i=$(($count + 1))
-        i=$newindex
+        i=$(($count))
+        #i=$newindex
     done
 fi
 
