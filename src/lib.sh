@@ -4,11 +4,17 @@
 
 function display_usage() {
     echo "usage: ./launch.sh [ -a <(/)path/to/a/folder/> ] [ -c <1-6> ] [ -f <(/)path/to/a/folder/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
-    echo "~~~~~~~~" && echo "end~"
 }
 
 function display_help() {
-    echo "help..."
+    echo "  -a  - run the script in full mode"
+    echo "  -c  - display the color scheme"
+    echo "  -f  - run the filesystem research part of the script"
+    echo "  -t  - display the scropt execution time"
+    echo "  -h  - display help"
+    echo "  -q  - enable prompting for saving information in a .status file"
+    echo "  -s  - run the system research part of the script"
+    echo ""
 }
 
 function display_error_message() {
