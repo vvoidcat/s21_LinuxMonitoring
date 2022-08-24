@@ -3,7 +3,7 @@
 #### other
 
 function display_usage() {
-    echo "usage: ./launch.sh [ -a <(/)path/to/a/folder/> ] [ -c <1-6> ] [ -f <(/)path/to/a/folder/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
+    echo "usage: ./launch.sh [ -a <(/)path/to/a/folder/> ] [ -c <0-6> ] [ -f <(/)path/to/a/folder/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
 }
 
 function display_help() {
