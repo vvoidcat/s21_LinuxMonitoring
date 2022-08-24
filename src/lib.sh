@@ -7,10 +7,11 @@ function display_usage() {
 }
 
 function display_help() {
-    echo "  -a  - run the script in full mode"
+    echo ""
+    echo "  -a  - run the script in a full mode"
     echo "  -c  - display the color scheme"
     echo "  -f  - run the filesystem research part of the script"
-    echo "  -t  - display the scropt execution time"
+    echo "  -t  - display the script execution time"
     echo "  -h  - display help"
     echo "  -q  - enable prompting for saving information in a .status file"
     echo "  -s  - run the system research part of the script"
@@ -76,6 +77,15 @@ function update_colors() {
     if [ -z "$color_bg1_user" ] || [[ ! $color_bg1_user =~ $colorre ]]; then color_bg1_user=$color_bg1_default; fi
     if [ -z "$color_font1_user" ] || [[ ! $color_font1_user =~ $colorre ]]; then color_font1_user=$color_font1_default; fi
     if [ -z "$color_font2_user" ] || [[ ! $color_font2_user =~ $colorre ]]; then color_font2_user=$color_font2_default; fi
+
+    resolve_color_repeats
+}
+
+function resolve_color_repeats() {
+    if [ $color_bg1_user -eq $color_font1_user ]; then
+        if [ $color_bg1_user -ne 0 ]; then color_bg1_user=6
+        else color_font1_user=6; fi
+    fi
 }
 
 function init_color_arrays() {

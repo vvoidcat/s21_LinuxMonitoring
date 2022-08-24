@@ -24,7 +24,7 @@ while getopts "a:f:c:hsqt" option; do
             question_flag=1
             ;;&
         h) 
-            display_usage && echo "" && display_help && exit 0
+            display_usage && display_help && exit 0
             ;;
     esac
 done
@@ -41,7 +41,7 @@ if [ $filesinfo_flag -eq 0 ] && [ $sysinfo_flag -eq 0 ]; then
 fi
 
 set_printf_locale
-update_colors $colorcodes           # TODO check for repeats  ## getopts
+update_colors $colorcodes           # TODO getopts
 init_color_arrays
 
 source ./src/filesinfo_module.sh
