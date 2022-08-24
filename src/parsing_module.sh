@@ -58,10 +58,9 @@ function read_params() {
 }
 
 
-
+#### main
 
 if [ ! -z "$argv" ] || [ ! -z "$argc" ]; then
-    # parse
     for ((i=0; i<${#argv}; i++)); do
         count=0
         #nextindex=$(($i + 1))
@@ -86,11 +85,6 @@ fi
 
 if [ $exit_flag -eq 0 ]; then
     if [ $flags -eq 0 ]; then display_usage && exit_flag=1; fi
-
-    if [ $filesinfo_flag -eq 1 ]; then
-        lastchar=${path: -1}
-        if [[ "$lastchar" != "/" ]]; then display_error_message 2 && filesinfo_flag=0; fi
-    fi
 
     if [ $filesinfo_flag -eq 0 ] && [ $sysinfo_flag -eq 0 ]; then
         if [ $question_flag -eq 1 ]; then display_error_message 1 && question_flag=0; fi;

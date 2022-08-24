@@ -21,6 +21,7 @@ function display_help() {
 function display_error_message() {
     if [ $1 -eq 1 ]; then echo "./launch.sh: error: no information to write in a file; rerun the program with [-a], [f] or [-s]"
     elif [ $1 -eq 2 ]; then echo "./launch.sh: error: the path string should end with '/'"
+    elif [ $1 -eq 3 ]; then echo "./launch.sh: error: no path string has been provided"
     elif [ $1 -eq 4 ]; then echo "./launch.sh: error: the specified path doesn't exist"
     fi
 }
@@ -31,16 +32,21 @@ function check_var_exists() {
     echo $result
 }
 
-function check_path() {
+function check_path_type() {
     if [[ "$1" = /* ]]; then path_type="absolute"
     else path_type="relative"; fi
 }
 
 function follow_path() {
-    if [[ "$1" = "absolute" ]]; then cd ~; fi
-    newpath=$(echo "$2" | rev | cut -c2- | rev)
-    if [ -d "$newpath" ]; then cd $newpath && path_flag=1
-    else path="n/a"; fi
+    if [ ! -z "$path" ]; then
+        lastchar=${path: -1}
+        if [[ "$lastchar" = "/" ]]; then
+            if [[ "$1" = "absolute" ]]; then cd ~; fi
+            newpath=$(echo "$path" | rev | cut -c2- | rev)
+            if [ -d "$newpath" ]; then cd $newpath && path_flag=1
+            else path_flag=4; fi
+        else path_flag=2; fi
+    else path_flag=3; fi
 }
 
 function set_printf_locale() {
@@ -287,7 +293,7 @@ function get_space_root_free() {
 
 function get_folders_total() {
     result=$(find . -mindepth 1 -type d | wc -l)
-    echo "$(($result - 1))"
+    echo "$(($result))"
 }
 
 function get_folders_list_maxsize() {
