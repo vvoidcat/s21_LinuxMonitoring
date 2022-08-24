@@ -3,26 +3,30 @@
 #### other
 
 function display_usage() {
-    echo "usage: ./launch.sh [ -a <(/)path/to/a/folder/> ] [ -c <0-6> ] [ -f <(/)path/to/a/folder/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
+    echo "usage:    ./launch.sh [ -a <(/)path/> ] [ -c <0-6> ] [ -f <(/)path/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
+    echo "example usage:      ./launch.sh -cfs /home/user/dir/ 123"
 }
 
 function display_help() {
     echo ""
-    echo "  -a  - run the script in a full mode"
-    echo "  -c  - display the color scheme"
-    echo "  -f  - run the filesystem research part of the script"
-    echo "  -t  - display the script execution time"
-    echo "  -h  - display help"
-    echo "  -q  - enable prompting for saving information in a .status file"
-    echo "  -s  - run the system research part of the script"
+    echo "options:"
+    echo "  -a  - runs the script in a full mode; requires specification of a path to a directory"
+    echo "  -c  - tests the color scheme parameters; displays default ones if the custom aren't inserted"
+    echo "  -f  - runs the filesystem research part of the script; requires specification of a path to a directory"
+    echo "  -t  - displays the script execution time"
+    echo "  -h  - displays help"
+    echo "  -q  - enables prompting for saving information in a .status file"
+    echo "  -s  - runs the system research part of the script"
     echo ""
 }
 
 function display_error_message() {
     if [ $1 -eq 1 ]; then echo "./launch.sh: error: no information to write in a file; rerun the program with [-a], [f] or [-s]"
-    elif [ $1 -eq 2 ]; then echo "./launch.sh: error: the path string should end with '/'"
+    elif [ $1 -eq 2 ]; then echo "./launch.sh: error: the path string should end with '/':" $path"/"
     elif [ $1 -eq 3 ]; then echo "./launch.sh: error: no path string has been provided"
-    elif [ $1 -eq 4 ]; then echo "./launch.sh: error: the specified path doesn't exist"
+    elif [ $1 -eq 4 ]; then echo "./launch.sh: error: the specified path doesn't exist:" $path
+    elif [ $1 -eq 5 ]; then echo "./launch.sh: error: usage: the option takes no arguments"
+    elif [ $1 -eq 6 ]; then echo "./launch.sh: error: usage: unknown option:" "--"$2
     fi
 }
 
