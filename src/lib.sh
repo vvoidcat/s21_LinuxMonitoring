@@ -17,11 +17,10 @@ function display_help() {
     echo "  -h  - displays help"
     echo "  -q  - enables prompting for saving information in a .status file"
     echo "  -s  - runs the system research part of the script"
-    echo ""
 }
 
 function display_error_message() {
-    if [ $1 -eq 1 ]; then echo "./launch.sh: error: no information to write in a file; rerun the program with [-a], [f] or [-s]"
+    if [ $1 -eq 1 ]; then echo "./launch.sh: error: no information to write in a file; rerun the program with [-a], [-f] or [-s]"
     elif [ $1 -eq 2 ]; then echo "./launch.sh: error: the path string should end with '/':" $path"/"
     elif [ $1 -eq 3 ]; then echo "./launch.sh: error: no path string has been provided"
     elif [ $1 -eq 4 ]; then echo "./launch.sh: error: the specified path doesn't exist:" $path
@@ -107,8 +106,6 @@ function init_color_arrays() {
 
     colors_bg=($color_white_bg $color_red_bg $color_cyan_bg
                $color_blue_bg $color_purple_bg $color_black_bg $color_none)
-    
-    colors_default=($color_bg1_default $color_font1_default $color_font2_default)
 }
 
 
