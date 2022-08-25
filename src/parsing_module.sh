@@ -61,9 +61,6 @@ function read_params() {
 if [ ! -z "$argv" ] || [ ! -z "$argc" ]; then
     for ((i=0; i<${#argv}; i++)); do
         count=0
-        nextindex=$(($i + 1))
-        chr=${argv: $i: 1}
-
         if [ $exit_flag -eq 1 ]; then break; fi
 
         for ((j=$i; j<${#argv}; j++)); do

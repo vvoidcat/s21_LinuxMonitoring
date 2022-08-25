@@ -21,10 +21,12 @@ if [ $exit_flag -eq 0 ]; then
 
     if [ $color_flag -eq 1 ]; then echo "~~~~~~~~" && print_color_settings; fi
 
-    endtime=$(get_time_millisec)
-    v_exectime=$(get_exectime $endtime $starttime)
+    if [ $time_flag -eq 1 ]; then
+        endtime=$(get_time_millisec)
+        v_exectime=$(get_exectime $endtime $starttime)
+        echo "~~~~~~~~" && print_exectime
+    fi
 
-    if [ $time_flag -eq 1 ]; then echo "~~~~~~~~" && print_exectime; fi
     if [ $question_flag -eq 1 ]; then echo "~~~~~~~~" && source ./src/status_module.sh; fi
 
     echo "~~~~~~~~" && echo "end~"
