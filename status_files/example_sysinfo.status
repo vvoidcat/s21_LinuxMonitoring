@@ -1,0 +1,16 @@
+HOSTNAME = hostname
+TIMEZONE = timezone
+USER = vvoidcat
+OS = type and version of operating system
+DATE = current date and time
+UPTIME = system uptime
+UPTIME_SEC = system uptime in seconds
+IP = ip address of the machine on any of the network interfaces
+MASK = network mask of any of the network interfaces as: xxx.xxx.xxx.xxx.
+GATEWAY = default gateway ip
+RAM_TOTAL = main memory size in GB with an accuracy of three decimal places as: 3.125 GB
+RAM_USED = used memory size in GB with an accuracy of three decimal places
+RAM_FREE = free memory size in GB, with an accuracy of three decimal places
+SPACE_ROOT = root partition size in MB, with an accuracy of two decimal places, as 254.25 MB
+SPACE_ROOT_USED = size of used space of the root partition in MB, with an accuracy of two decimal places
+SPACE_ROOT_FREE = size of free space of the root partition in MB, with an accuracy of two decimal places

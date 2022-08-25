@@ -1,0 +1,16 @@
+Path = status_files/
+Total number of folders (including all nested ones) = 0
+Total number of files = 2
+Configuration (.conf) files = 0
+Text (.txt) files = 0
+Executable files = 0
+Log (.log) files = 0
+Archive files = 0
+Symbolic links = 0
+TOP 5 folders of maximum size arranged in descending order (path and size):
+	n/a
+TOP 10 files of maximum size arranged in descending order (path, size and type):
+	1 - ./example_sysinfo.status, 4.0K, status
+	2 - ./example_filesinfo.status, 4.0K, status
+TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file):
+	n/a 
