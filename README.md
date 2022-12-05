@@ -1,7 +1,9 @@
 # s21_LinuxMonitoring
 
-A School 21 study project - Linux basic bash scripting and system/file system research.
-The script was written to run on Linux OS and tested on Ubuntu 20.04.4 LTS (Focal Fossa).
-To start the execution of the script, call ```./launch.sh``` from the terminal.
+This repository contains the implementations of two educational projects for School 21:
+DO3_LinuxMonitoring_v1.0-0
+DO4_LinuxMonitoring_v2.0-0
 
-The original task consisted of two major parts which were supposed to work and run separately. I combined them together so they would run as a single program. See the files in the **status_files** directory for the information the script should output.
+All scripts were written to run on Linux OS and tested on VirtualBox installments of Ubuntu 20.04.4 LTS (Focal Fossa) and Ubuntu 22.04.1 LTS (Jammy Jellyfish), both Desktop and Server images.
+
+For additional information on launching the scripts, their functionality and expected output, see the README files in the containing folders.
