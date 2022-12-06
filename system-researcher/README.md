@@ -5,4 +5,4 @@ The tool allows customization of its console output with several color scheme va
 
 See the provided files in the **example-files/** directory for the exact information the script should output.
 
-To start the execution of the script, call ```./launch_sysinfo.sh``` from the terminal.
+To start the execution of the script, call ```./researcher.sh``` from the terminal.
