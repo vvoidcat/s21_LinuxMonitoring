@@ -20,7 +20,7 @@ agents=("Mozilla" "Google Chrome" "Opera" "Safari" "Internet Explorer"
         "Microsoft Edge" "Crawler and bot" "Library and net tool")
 
 
-if [ $argc -ne 0 ]; then echo "./launch_logsgen.sh: error: 1: unknown option" && display_usage_logsgen
+if [ $argc -ne 0 ]; then echo "./log_gen.sh: error: 1: unknown option" && display_usage_logsgen
 else
     echo "log generator launched, please wait..."
     for ((i=1; i<6; i++)); do

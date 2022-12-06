@@ -11,7 +11,7 @@ set_printf_locale
 html="logsreport.html"
 templog=$(date "+temp_%d-%b-%Y:%H:%M:%S.log")
 
-if [ $argc -ne 0 ]; then echo "./launch_loganalyzer.sh: error: 1: unknown option" && display_usage_loganalyzer
+if [ $argc -ne 0 ]; then echo "./log_analyzer.sh: error: 1: unknown option" && display_usage_loganalyzer
 else
     if [ -f "$html" ]; then rm -rf $html; fi
     
@@ -28,7 +28,7 @@ else
         fi
 
         if [ $install_flag -ne 1 ]; then
-            echo "./launch_loganalyzer.sh: error: 2: goaccess package not found; exit"
+            echo "./log_analyzer.sh: error: 2: goaccess package not found; exit"
             exit 0
         fi
     fi

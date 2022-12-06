@@ -3,8 +3,8 @@
 #### other
 
 function display_usage() {
-    echo "usage:    ./launch.sh [ -a <(/)path/> ] [ -c <0-6> ] [ -f <(/)path/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
-    echo "example usage:      ./launch.sh -cfs /home/user/dir/ 123"
+    echo "usage:    ./researcher.sh [ -a <(/)path/> ] [ -c <0-6> ] [ -f <(/)path/> ] [ - t ] [ -h ] [ -q ] [ -s ]"
+    echo "example usage:      ./researcher.sh -cfs /home/user/dir/ 123"
 }
 
 function display_help() {
@@ -20,12 +20,12 @@ function display_help() {
 }
 
 function display_error_message() {
-    if [ $1 -eq 1 ]; then echo "./launch.sh: error: no information to write in a file; rerun the program with [-a], [-f] or [-s]"
-    elif [ $1 -eq 2 ]; then echo "./launch.sh: error: the path string should end with '/':" $path"/"
-    elif [ $1 -eq 3 ]; then echo "./launch.sh: error: no path string has been provided"
-    elif [ $1 -eq 4 ]; then echo "./launch.sh: error: the specified path doesn't exist:" $path
-    elif [ $1 -eq 5 ]; then echo "./launch.sh: error: usage: the option takes no arguments"
-    elif [ $1 -eq 6 ]; then echo "./launch.sh: error: usage: unknown option:" "--"$2
+    if [ $1 -eq 1 ]; then echo "./researcher.sh: error: no information to write in a file; rerun the program with [-a], [-f] or [-s]"
+    elif [ $1 -eq 2 ]; then echo "./researcher.sh: error: the path string should end with '/':" $path"/"
+    elif [ $1 -eq 3 ]; then echo "./researcher.sh: error: no path string has been provided"
+    elif [ $1 -eq 4 ]; then echo "./researcher.sh: error: the specified path doesn't exist:" $path
+    elif [ $1 -eq 5 ]; then echo "./researcher.sh: error: usage: the option takes no arguments"
+    elif [ $1 -eq 6 ]; then echo "./researcher.sh: error: usage: unknown option:" "--"$2
     fi
 }
 

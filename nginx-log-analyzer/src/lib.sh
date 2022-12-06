@@ -3,16 +3,16 @@
 #### print && errors
 
 function display_usage_logsgen() {
-    echo "usage:    ./launch_logsgen.sh"
+    echo "usage:    ./log_gen.sh"
 }
 
 function display_usage_logsorter() {
-    echo "usage:    ./launch_logsorter.sh [ 1-4 ]"
+    echo "usage:    ./log_sorter.sh [ 1-4 ]"
     display_help_logsorter
 }
 
 function display_usage_loganalyzer() {
-    echo "usage:    ./launch_loganalyzer.sh"
+    echo "usage:    ./log_analyzer.sh"
 }
 
 function display_help_logsorter() {
@@ -20,7 +20,7 @@ function display_help_logsorter() {
     echo "options:"
     echo "  [1]  - displays all entries sorted by response code"
     echo "  [2]  - displays all unique IPs found in the entries"
-    echo "  [3]  - displays all requests with errors (response code - 4xx or 5xxx)"
+    echo "  [3]  - displays all requests with errors (response code - 4xx or 5xx)"
     echo "  [4]  - displays all unique IPs found among the erroneous requests"
 }
 
@@ -56,7 +56,7 @@ function build_templog() {
 
     logs_list=$(find . -name "s21_nginx*.log")
     if [ -z "$logs_list" ]; then
-        echo "./launch_loganalyzer.sh: error: 3: no s21_nginx*.log files found in the $(pwd)/logs/ folder"
+        echo "./log_analyzer.sh: error: 3: no s21_nginx*.log files found in the $(pwd)/logs/ folder"
         exit 0
     fi
 

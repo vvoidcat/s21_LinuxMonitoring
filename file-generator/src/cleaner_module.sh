@@ -6,7 +6,7 @@ scriptdir=$(pwd)
 dirpath_list=""
 delete_list=""
 
-source ./input_module.sh "WARNING: this operation is irreversible. would you like to continue? y/n"
+source ./src/input_module.sh "WARNING: this operation is irreversible. would you like to continue? y/n"
 rm_flag=$outflag
 
 if [ $rm_flag -eq 1 ]; then
@@ -88,7 +88,7 @@ if [ $rm_flag -eq 1 ]; then
 
     linecount=$(echo "$delete_list" | wc -l)
 
-    if [ -z "$delete_list" ] || [ $linecount -eq 0 ]; then display_error_message 14 0
+    if [ -z "$delete_list" ] || [ $linecount -eq 0 ]; then display_error_message 14 "cleaner.sh" 0
     else
         for ((i=1; i<$linecount; i++)); do
             line=$(echo "$delete_list" | sed -n "$i"p | tr '\\' ' ')

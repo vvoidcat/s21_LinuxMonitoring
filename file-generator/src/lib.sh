@@ -3,40 +3,57 @@
 
 #### print && errors
 
-function display_usage() {
-    echo "usage:    ./main.sh [ 1 </absolute/path/to/files.log> ]"
+function display_usage_filegen() {
+    echo "usage:    ./filegen.sh [ 1-2 ] <params>"
+    display_help_filegen_local
+    display_help_filegen_global
+}
+
+function display_usage_cleaner() {
+    echo "usage:    ./cleaner.sh [ 1 </absolute/path/to/*_files.log> ]"
     echo "                    [ 2 <YYYY-MM-DD_HH:MM--YYYY-MM-DD_HH:MM> ]"
     echo "                    [ 3 <abc_YYMMDD> ]"
 }
 
-function display_help() {
+function display_help_filegen_local() {
     echo ""
-    echo "options:"
-    echo "  -h  - displays help"
-    echo "  -c  - clears the previously generated files by:"
-    echo "          1. log file"
-    echo "          2. creation date and time"
-    echo "          3. name mask (i.e. characters, underlining and date)."
+    echo "options for [1] (local generation):"
+    echo "   Parameter 2 - absolute path."
+    echo "   Parameter 3 - number of subfolders (more than 0)."
+    echo "   Parameter 4 - a list of English alphabet letters used in folder names (no more than 7 characters)."
+    echo "   Parameter 5 - number of files in each created folder (more than 0)."
+    echo "   Parameter 6 - a list of English alphabet letters used in the file name and extension"
+    echo "               (no more than 7 characters for the name, no more than 3 characters for the extension)."
+    echo "   Parameter 7 - file size (in kilobytes, more than 0 but not more than 100)."
+}
+
+function display_help_filegen_global() {
+    echo ""
+    echo "options for [2] (global randomized generation):"
+    echo "   Parameter 2 - a list of English alphabet letters used in folder names (no more than 7 characters)."
+    echo "   Parameter 3 - the list of English alphabet letters used in the file name and extension"
+    echo "               (no more than 7 characters for the name, no more than 3 characters for the extension)."
+    echo "   Parameter 4 - file size (in megabytes, more than 0 but not more than 100)."
 }
 
 function display_error_message() {
-    if [ $1 -eq 1 ]; then echo "./main.sh: error: 1: wrong number of parameters"
-    elif [ $1 -eq 2 ]; then echo "./main.sh: error: 2: the entered parameter doesn't meet the requirements: $3"
-    elif [ $1 -eq 3 ]; then echo "./main.sh: error: 3: the specified path doesn't exist"
-    elif [ $1 -eq 4 ]; then echo "./main.sh: error: 4: a directory with this path/name already exists: $3"
-    elif [ $1 -eq 5 ]; then echo "./main.sh: error: 5: a file with this path/name already exists: $3"
-    elif [ $1 -eq 6 ]; then echo "./main.sh: error: 6: the disk has less than 1GB of free space; quitting"
-    elif [ $1 -eq 7 ]; then echo "./main.sh: error: 7: exhausted possibilities for naming directories; quitting"
-    elif [ $1 -eq 8 ]; then echo "./main.sh: error: 8: exhausted possibilities for naming files; proceeding to the next directory"
-    elif [ $1 -eq 9 ]; then echo "./main.sh: error: 9: incorrect path/name/type of the file specified / such file doesn't exist"
-    elif [ $1 -eq 10 ]; then echo "./main.sh: error: 10: incorrect date format"
-    elif [ $1 -eq 11 ]; then echo "./main.sh: error: 11: incorrect name mask format"
-    elif [ $1 -eq 12 ]; then echo "./main.sh: error: 12: the .log file was already removed from the disk: $3"
-    elif [ $1 -eq 13 ]; then echo "./main.sh: error: 13: the script execution was interrupted; rerun"
-    elif [ $1 -eq 14 ]; then echo "./main.sh: error: 14: nothing to remove"
+    if [ $1 -eq 1 ]; then echo "./$2: error: 1: wrong number of parameters"
+    elif [ $1 -eq 2 ]; then echo "./$2: error: 2: the entered parameter doesn't meet the requirements: $4"
+    elif [ $1 -eq 3 ]; then echo "./$2: error: 3: the specified path doesn't exist"
+    elif [ $1 -eq 4 ]; then echo "./$2: error: 4: a directory with this path/name already exists: $4"
+    elif [ $1 -eq 5 ]; then echo "./$2: error: 5: a file with this path/name already exists: $4"
+    elif [ $1 -eq 6 ]; then echo "./$2: error: 6: the disk has less than 1GB of free space; quitting"
+    elif [ $1 -eq 7 ]; then echo "./$2: error: 7: exhausted possibilities for naming directories; quitting"
+    elif [ $1 -eq 8 ]; then echo "./$2: error: 8: exhausted possibilities for naming files; proceeding to the next directory"
+    elif [ $1 -eq 9 ]; then echo "./$2: error: 9: incorrect path/name/type of the file specified / such file doesn't exist"
+    elif [ $1 -eq 10 ]; then echo "./$2: error: 10: incorrect date format"
+    elif [ $1 -eq 11 ]; then echo "./$2: error: 11: incorrect name mask format"
+    elif [ $1 -eq 12 ]; then echo "./$2: error: 12: the .log file was already removed from the disk: $4"
+    elif [ $1 -eq 13 ]; then echo "./$2: error: 13: the script execution was interrupted; rerun"
+    elif [ $1 -eq 14 ]; then echo "./$2: error: 14: nothing to remove"
     fi
     
-    if [ $2 -eq 1 ]; then display_separator; fi
+    if [ $3 -eq 1 ]; then display_separator; fi
 }
 
 function display_separator() {
@@ -62,7 +79,7 @@ function print_results_cleaner() {
     printf " directories and "
     print_colored_text $filecount $color_blue_font
     printf " files total were removed from the disk\n"
-    printf "remaining disk space: "
+    printf "remaining disk space (GB): "
     print_colored_text $(get_space_root_free) $color_white_font $color_red_bg && printf "\n"
 }
 
@@ -121,8 +138,17 @@ function check_path_type() {
     else echo "relative"; fi
 }
 
+function check_param_filegen_mode() {
+    flag=0
+    if [[ $1 =~ $numre ]]; then
+        if [ $1 -eq 1 ]; then flag=1
+        elif [ $1 -eq 2 ]; then flag=2; fi
+    fi
+    echo $flag
+}
+
 function check_param_num() {
-    flag=0;
+    flag=0
     if [[ $1 =~ $numre ]]; then
         if [ $1 -gt 0 ]; then flag=1; fi
     fi
@@ -134,9 +160,10 @@ function check_param_filename() {
     flag=0
 
     if [[ "$mask_filename" =~ $engre ]] && [ ${#mask_filename} -lt 8 ]; then
-        if [ -z ${#mask_fileext} ]; then flag=1; fi
+        if [ ${#mask_fileext} -eq 0 ]; then flag=1; fi
         if ! [ -z "$mask_fileext" ]; then
             if ! [[ "$mask_fileext" =~ $engre ]]; then flag=0; fi
+            if [[ "$mask_fileext" =~ $engre ]] && [ ${#mask_fileext} -lt 4 ]; then flag=1; fi
         fi
     fi
     echo $flag

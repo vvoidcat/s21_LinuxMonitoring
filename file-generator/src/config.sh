@@ -1,6 +1,8 @@
 exit_flag=0
 outflag=0
 
+filegen_mode=0
+
 path=""
 num_subdirs=0
 num_files=0

@@ -10,8 +10,8 @@ set_printf_locale
 
 templog=$(date "+temp_%d-%b-%Y:%H:%M:%S.log")
 
-if [ $argc -ne 1 ]; then echo "./launch_logsorter.sh: error: 1: wrong number of parameters" && display_usage_logsorter
-elif ! [[ $1 =~ ^[1-4]$ ]]; then echo "./launch_logsorter.sh: error: 2: unknown parameter option" && display_usage_logsorter
+if [ $argc -ne 1 ]; then echo "./log_sorter.sh: error: 1: wrong number of parameters" && display_usage_logsorter
+elif ! [[ $1 =~ ^[1-4]$ ]]; then echo "./log_sorter.sh: error: 2: unknown parameter option" && display_usage_logsorter
 else
     build_templog
 

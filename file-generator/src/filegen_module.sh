@@ -12,8 +12,8 @@ filecount=0
 count_insert_dir=0
 index_char_dir=0
 error_flag=0
-tempdir=$let_subdirs
-tempfile=$let_filenames
+tempdir=$mask_dirname
+tempfile=$mask_filename
 filesize_bytes=$(convert_to_bytes "$filesize" "$filesize_type")
 
 echo "file generation process launched, please wait..."
@@ -22,14 +22,16 @@ for ((i=0; i<$num_subdirs; i++)); do
     print_percentage $i $num_subdirs
 
     if [ $(check_partition_size) -ne 1 ]; then
-        display_error_message 6 0 && error_flag=1
+        display_error_message 6 "filegen.sh" 0 && error_flag=1
         break
     fi
 
-    find_random_path
-    while (( $(check_str_contains "$path" "bin") != 0 )); do
+    if [ $filegen_mode -eq 2 ]; then
         find_random_path
-    done
+        while (( $(check_str_contains "$path" "bin") != 0 )); do
+            find_random_path
+        done
+    fi
     cd $path
 
     count_insert_file=0
@@ -41,14 +43,14 @@ for ((i=0; i<$num_subdirs; i++)); do
         index_char_dir=$(($index_char_dir + 1))
     fi
 
-    gen=$(generate_name_from_pattern $let_subdirs $count_insert_dir $index_char_dir)
+    gen=$(generate_name_from_pattern $mask_dirname $count_insert_dir $index_char_dir)
     subdir=$(generate_dirname "$gen")
 
     if [ -z "$gen" ]; then
-        display_error_message 7 0 && error_flag=1
+        display_error_message 7 "filegen.sh" 0 && error_flag=1
         break
     elif [ -d "$subdir" ]; then
-        display_error_message 4 0 "$subdir" && error_flag=1
+        display_error_message 4 "filegen.sh" 0 "$subdir" && error_flag=1
     else 
         mkdir $subdir
         dircount=$(($dircount + 1))
@@ -64,14 +66,14 @@ for ((i=0; i<$num_subdirs; i++)); do
             index_char_file=$(($index_char_file + 1))
         fi
 
-        gen=$(generate_name_from_pattern $let_filenames $count_insert_file $index_char_file)
+        gen=$(generate_name_from_pattern $mask_filename $count_insert_file $index_char_file)
         filename=$(generate_filename "$subdir" "$gen")
 
         if [ -z "$gen" ]; then
-            display_error_message 8 0 && error_flag=1
+            display_error_message 8 "filegen.sh" 0 && error_flag=1
             break
         elif [ -f "$filename" ]; then
-            display_error_message 5 0 "$filename" && error_flag=1
+            display_error_message 5 "filegen.sh" 0 "$filename" && error_flag=1
             continue
         else
             dd if=/dev/zero of=$filename bs=$filesize_bytes count=1 >& /dev/null

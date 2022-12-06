@@ -2,4 +2,5 @@
 system-research/status-files/*
 nginx-log-analyzer/logs/*
 nginx-log-analyzer/*.html
-filegen/logs/*
+file-generator/logs/*
+dump
